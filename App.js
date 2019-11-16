@@ -36,6 +36,7 @@ export default function App() {
   const [index, setIndex] = React.useState(0);
   const [customer, setCustomer] = React.useState([]);
   const [customerId, setCustomerId] = React.useState('');
+  const [customerTarget, setCustomerTarget] = React.useState('');
 
 
 
@@ -103,6 +104,7 @@ export default function App() {
   const showUserData = (user) => {
     setCustomer([user]);
     setCustomerId(user.customerId);
+    setCustomerTarget(user.target);
     setIndex(2);
   }
 
@@ -136,7 +138,7 @@ export default function App() {
 
 
         <View style={{ flex: 1, justifyContent: 'center', padding: 20 }}>
-         <UserData customerdata={customer} customerId={customerId}  goBackClientToList={() => setIndex(1)}/>
+         <UserData customerdata={customer} customerId={customerId} customertarget={customerTarget}  goBackClientToList={() => setIndex(1)}/>
         </View>  
 
         <BottomNavigation />

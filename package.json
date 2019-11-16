@@ -17,6 +17,7 @@
     "react-native-loading-spinner-overlay": "^1.0.1",
     "react-native-material-ui": "^1.30.1",
     "react-native-nfc-manager": "^1.2.6",
+    "react-native-progress-steps": "^1.2.8",
     "react-native-vector-icons": "^6.6.0",
     "react-swipeable-views-native": "^0.13.2"
   },

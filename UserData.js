@@ -8,13 +8,14 @@ import Baggages from './Baggages';
 
 export default function UserData(props) {
 
+
     return (
 
         <Container>
 
             {props.customerdata.map((customer) => {
                 return (
-                    <ListItem centerElement={{primaryText: customer.name
+                    <ListItem centerElement={{primaryText: customer.name + customer.target
                       }} key={customer.customerId} />
                 )
             })}
@@ -24,7 +25,7 @@ export default function UserData(props) {
 
         {props.customerId != '' ? ( 
             
-            <Baggages customerId={props.customerId}/> 
+            <Baggages customerId={props.customerId} customertarget={props.customertarget}/> 
         
             ) : ( null )
     

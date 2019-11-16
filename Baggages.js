@@ -40,31 +40,21 @@ export default function Baggages(props) {
             {baggages.map((baggage) => {
                 return (
             <Card style={{flex: 0}}>
-            <CardItem >
             <CardItem header bordered>
               <Text>Baggage ID: {baggage.baggageId}</Text>
             </CardItem>
               <Left>
-                <Body>
-                  <Text note>April 15, 2016</Text>
-                </Body>
               </Left>
-            </CardItem>
             <CardItem>
               <Body>
-                <Image source={{uri: 'Image URL'}} style={{height: 200, width: 200, flex: 1}}/>
+              <Tracking baggageId={baggage.baggageId} /> 
               </Body>
             </CardItem>
             <CardItem>
               <Left>
-                <Button transparent textStyle={{color: '#87838B'}}>
-                  <Icon name="logo-github" />
 
-                    <Tracking baggageId={baggage.baggageId} /> 
-                    
-
-                  <Text>1,926 stars</Text>
-                </Button>
+              {props.customertarget == baggage.airport ? ( <Text>Everything good</Text> ) : (null) }
+            
               </Left>
             </CardItem>
           </Card>
