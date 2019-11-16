@@ -1,13 +1,20 @@
-import React, { Component } from 'react'
-import { View, Text, TouchableOpacity, ScrollView, TextInput } from 'react-native';
+import React, {Component} from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  TextInput,
+} from 'react-native';
 import SwipeableViews from 'react-swipeable-views-native';
-import NfcManager, { NdefParser, NfcTech } from 'react-native-nfc-manager';
+import NfcManager, {NdefParser, NfcTech} from 'react-native-nfc-manager';
 import Forms from './Forms';
 import Customers from './Customers';
 import UserData from './UserData';
 import BottomNavigation from './BottomNavigationBar';
-import { Container } from 'native-base';
-
+import {Container} from 'native-base';
+import BagInfo from './BagInfo';
+import ReadTag from './ReadTag';
 
 function strToBytes(str) {
   let result = [];
@@ -20,15 +27,26 @@ function strToBytes(str) {
 function buildTextPayload(valueToWrite) {
   const textBytes = strToBytes(valueToWrite);
   // in this example. we always use `en`
-  const headerBytes = [0xD1, 0x01, (textBytes.length + 3), 0x54, 0x02, 0x65, 0x6e];
+  const headerBytes = [
+    0xd1,
+    0x01,
+    textBytes.length + 3,
+    0x54,
+    0x02,
+    0x65,
+    0x6e,
+  ];
   return [...headerBytes, ...textBytes];
 }
 
-
 export default function App() {
-
   const [supported, setSupported] = React.useState(false);
   const [text, setText] = React.useState('');
+  const [fragile, setFragile] = React.useState(false);
+  const [specialBaggage, setSpecialBaggage] = React.useState(false);
+  const [width, setWidth] = React.useState('');
+  const [length, setLength] = React.useState('');
+  const [height, setHeight] = React.useState('');
   const [isTestRunning, setIsTestRunning] = React.useState(false);
   const [tag, setTag] = React.useState(null);
   const [parsedText, setParsedText] = React.useState(null);
@@ -38,22 +56,20 @@ export default function App() {
   const [customerId, setCustomerId] = React.useState('');
   const [customerTarget, setCustomerTarget] = React.useState('');
 
-
-
   const _runTest = textToWrite => {
     const cleanUp = () => {
       console.log(textToWrite);
       setIsTestRunning(false);
-      NfcManager.closeTechnology()
+      NfcManager.closeTechnology();
       NfcManager.unregisterTagEvent();
-    }
+    };
 
-    const parseText = (tag) => {
+    const parseText = tag => {
       if (tag.ndefMessage) {
         return NdefParser.parseText(tag.ndefMessage[0]);
       }
       return null;
-    }
+    };
 
     setIsTestRunning(false);
     NfcManager.registerTagEvent(tag => console.log(tag))
@@ -73,13 +89,12 @@ export default function App() {
       .catch(err => {
         console.warn(err);
         cleanUp();
-      })
-  }
+      });
+  };
 
   const _cancelTest = () => {
-    NfcManager.cancelTechnologyRequest()
-      .catch(err => console.warn(err));
-  }
+    NfcManager.cancelTechnologyRequest().catch(err => console.warn(err));
+  };
 
   const _startNfc = () => {
     NfcManager.start()
@@ -88,80 +103,140 @@ export default function App() {
       .catch(err => {
         console.warn(err);
         setEnabled(false);
-      })
-  }
+      });
+  };
 
   const _clearMessages = () => {
     setTag(null);
     setParsedText(null);
-  }
+  };
 
-  const setTextValue = (text) => {
+  const setTextValue = text => {
     setText(text);
   };
 
+  const setFragileValue = fragile => {
+    setFragile(fragile);
+  };
 
-  const showUserData = (user) => {
+  const setWidthValue = width => {
+    setWidth(width);
+  };
+
+  const setLengthValue = length => {
+    setLength(length);
+  };
+
+  const setHeightValue = height => {
+    setHeight(height);
+  };
+
+  const setSpecialBaggageValue = specialBaggage => {
+    setSpecialBaggage(specialBaggage);
+  };
+
+  const showUserData = user => {
     setCustomer([user]);
     setCustomerId(user.customerId);
     setCustomerTarget(user.target);
     setIndex(2);
-  }
-
+  };
 
   React.useEffect(() => {
-    NfcManager.isSupported()
-      .then(supported => {
-        setSupported(true);
-        if (supported) {
-          _startNfc();
-        }
-      });
+    NfcManager.isSupported().then(supported => {
+      setSupported(true);
+      if (supported) {
+        _startNfc();
+      }
+    });
   });
 
-  
-
   return (
-
-
     <Container>
-    
-    <SwipeableViews style={styles.slideContainer} index={index} disabled={index == 2 ? true : false}>
+      <SwipeableViews
+        style={styles.slideContainer}
+        index={index}
+        disabled={index == 2 ? true : false}>
 
-        <View style={{ flex: 1, justifyContent: 'center'}}>
-        <Forms isTestRunning={isTestRunning} setText={setTextValue} runTest={_runTest} text={text}/>
+        <View style={{flex: 1, justifyContent: 'center'}}>
+          <ReadTag
+            isTestRunning={isTestRunning}
+            setText={setTextValue}
+            runTest={_runTest}
+            text={text}
+          />
+        </View>
+        <View style={{flex: 1, justifyContent: 'center'}}>
+          <Forms
+            isTestRunning={isTestRunning}
+            setText={setTextValue}
+            setFragile={setFragileValue}
+            setWidth={setWidthValue}
+            setLength={setLengthValue}
+            setHeight={setHeightValue}
+            setSpecialBaggage={setSpecialBaggageValue}
+            runTest={_runTest}
+            text={text}
+            fragile={fragile}
+            height={height}
+            width={width}
+            length={length}
+            specialBaggage={specialBaggage}
+          />
         </View>
 
-        <View style={{ flex: 1, justifyContent: 'center' }}>
+        <View style={{flex: 1, justifyContent: 'center'}}>
+          <BagInfo
+            isTestRunning={isTestRunning}
+            setText={setTextValue}
+            setFragile={setFragileValue}
+            setWidth={setWidthValue}
+            setLength={setLengthValue}
+            setHeight={setHeightValue}
+            setSpecialBaggage={setSpecialBaggageValue}
+            runTest={_runTest}
+            text={text}
+            fragile={fragile}
+            height={height}
+            width={width}
+            length={length}
+            specialBaggage={specialBaggage}
+          />
+        </View>
+
+        {/* <View style={{flex: 1, justifyContent: 'center'}}>
           <Customers showuserdata={showUserData} />
         </View>
 
-
-        <View style={{ flex: 1, justifyContent: 'center' }}>
-         <UserData customerdata={customer} customerId={customerId} customertarget={customerTarget}  goBackClientToList={() => setIndex(1)}/>
-        </View>  
-
-    </SwipeableViews>
-
-   </Container>
-
-  
-  )
+        <View style={{flex: 1, justifyContent: 'center'}}>
+          <UserData
+            customerdata={customer}
+            customerId={customerId}
+            customertarget={customerTarget}
+            goBackClientToList={() => setIndex(1)}
+          />
+        </View> */}
+      </SwipeableViews>
+    </Container>
+  );
 }
 
 const styles = {
   slide: {
     padding: 15,
-    minHeight: "100%",
+    minHeight: '100%',
     color: '#fff',
   },
   slide1: {
-    backgroundColor: '#FEA900',
+    backgroundColor: '#Fff',
   },
   slide2: {
-    backgroundColor: '#B3DC4A',
+    backgroundColor: '#fff',
   },
   slide3: {
-    backgroundColor: '#6AC0FF',
+    backgroundColor: '#fff',
+  },
+  slide4: {
+    backgroundColor: '#fff',
   },
 };
