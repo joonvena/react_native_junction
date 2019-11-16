@@ -132,16 +132,14 @@ export default function App() {
         <Forms isTestRunning={isTestRunning} setText={setTextValue} runTest={_runTest} text={text}/>
         </View>
 
-        <View style={{ flex: 1, justifyContent: 'center', padding: 20 }}>
+        <View style={{ flex: 1, justifyContent: 'center' }}>
           <Customers showuserdata={showUserData} />
         </View>
 
 
-        <View style={{ flex: 1, justifyContent: 'center', padding: 20 }}>
+        <View style={{ flex: 1, justifyContent: 'center' }}>
          <UserData customerdata={customer} customerId={customerId} customertarget={customerTarget}  goBackClientToList={() => setIndex(1)}/>
         </View>  
-
-        <BottomNavigation />
 
     </SwipeableViews>
 

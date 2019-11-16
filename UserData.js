@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
 import { View, Text, ScrollView, Button } from 'react-native';
-import SwipeableViews from 'react-swipeable-views-native';
 import { ListItem } from 'react-native-material-ui';
-import { Container, Header, Content, Card, CardItem, Thumbnail, Icon, Left, Body } from 'native-base';
+import { Container } from 'native-base';
 import Baggages from './Baggages';
 
 

@@ -29,6 +29,10 @@ export default function Baggages(props) {
        setTracking(true);
    }
 
+   const setBaggageEventIds = (ids) => {
+    console.alert(ids);
+   }
+
 
 
 

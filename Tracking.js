@@ -9,6 +9,7 @@ export default function Tracking(props) {
     const [events, setEvents] = React.useState([]);
     const [loading, setLoading] = React.useState(true);
     const [steps, setSteps] = React.useState(0);
+    const [missingColor, setMissingColor] = React.useState("#CCC");
 
     React.useEffect(() => {
         fetch(`https://junction.dev.qoco.fi/api/events/${props.baggageId}`, {headers: { "x-api-key": "jmdSHjy6WPaXwoR75E6mJ1ImhxKPRJb51v6DBS0A"}})
@@ -21,22 +22,29 @@ export default function Tracking(props) {
    }, [props.baggageId]);
 
 
+   const check_if_missing = (event_missing) => {
+        if(event_missing == "MISSING") {
+            setMissingColor("red");
+        }
+   }
+
+
     return (
 
 
-       loading ? ( <Spinner visible={loading}/> ) : (
+       loading ? ( <Spinner visible={loading} overlayColor={"white"}/> ) : (
 
         <View style={{flex: 1}}>
-            <ProgressSteps>
+            <ProgressSteps completedStepIconColor={missingColor}>
         {events.map((event, index) => {
             return (
-                <React.Fragment>
-                <ProgressStep key={index} label={event.airport}>
+
+                <ProgressStep key={index} label={event.airport} onNext={() => check_if_missing(event.type)}>
                 <View style={{ alignItems: 'center' }}>
                     <Text>{event.type} {event.timestamp}</Text>
                 </View>
                 </ProgressStep>
-                </React.Fragment>
+
         ) 
         })}
 </ProgressSteps>
