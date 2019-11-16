@@ -9,8 +9,9 @@ import {
   Alert,
   View,
   Image,
+  ImageBackground,
 } from 'react-native';
-import {Switch} from 'native-base';
+import image from './img/Send_Baggage_backonly.png';
 
 export default class BagInfo extends Component {
   constructor(props) {
@@ -27,19 +28,23 @@ export default class BagInfo extends Component {
   render() {
     return (
       <KeyboardAvoidingView behavior="padding" style={styles.container}>
-        <Image
-          style={{width: '100%', marginTop: 50}}
-          source={require('./img/image3.png')}
-        />
-        <Text style={styles.screenTitle}>Hello 2 slide</Text>
-        <View style={styles.container2}>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => this.props.runTest(this.props.text)}>
-            <Text style={styles.buttonText}>Next- nope</Text>
-          </TouchableOpacity>
-          {this.props.isTestRunning ? <Text>Yes</Text> : null}
-        </View>
+        <ImageBackground style={{width: '100%', height: '100%'}} source={image}>
+          <View style={styles.container2}>
+            <TextInput
+              style={styles.textInput}
+              keyboardType="numeric"
+              returnKeyType="done"
+              blurOnSubmit
+              onChangeText={text => this.props.setText(text)}
+              value={this.props.text}
+            />
+            <TouchableOpacity
+              style={styles.button}
+              onPress={this.props.confirm}>
+              <Text style={styles.buttonText}>Confirm</Text>
+            </TouchableOpacity>
+          </View>
+        </ImageBackground>
       </KeyboardAvoidingView>
     );
   }
@@ -49,17 +54,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    justifyContent: 'flex-start',
   },
   container2: {
-    paddingHorizontal: 10,
     justifyContent: 'center',
-  },
-  rows: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    margin: 15,
-    color: '#0B1560',
+    alignContent: 'center',
   },
   screenTitle: {
     fontSize: 35,
@@ -69,26 +67,28 @@ const styles = StyleSheet.create({
   },
   textInput: {
     height: 35,
-    borderColor: 'grey',
-    borderWidth: 1,
-    borderRadius: 2,
+    borderRadius: 15,
     backgroundColor: '#FFF',
     paddingHorizontal: 15,
-    marginBottom: 15,
-    fontSize: 18,
+    paddingVertical: 30,
+    marginBottom: 30,
+    marginHorizontal: 20,
+    fontSize: 20,
     color: '#0B1560',
+    alignContent: 'center',
+    marginTop: 350,
   },
   button: {
     backgroundColor: '#0B1560',
-    borderRadius: 3,
-    height: 40,
+    borderRadius: 50,
+    height: 50,
     marginBottom: 10,
+    marginHorizontal: 60,
     justifyContent: 'center',
     alignItems: 'center',
   },
   buttonText: {
     color: '#FFF',
-    fontWeight: 'bold',
     fontSize: 16,
   },
 });

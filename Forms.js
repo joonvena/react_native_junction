@@ -86,7 +86,7 @@ export default class Forms extends Component {
           </View>
           <TouchableOpacity
             style={styles.button}
-            onPress={() => this.props.runTest(this.props.text)}>
+            onPress={this.props.next}>
             <Text style={styles.buttonText}>Next</Text>
           </TouchableOpacity>
           {this.props.isTestRunning ? <Text>Yes</Text> : null}
@@ -138,15 +138,16 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: '#0B1560',
-    borderRadius: 3,
-    height: 40,
-    marginBottom: 10,
+    borderRadius: 50,
+    height: 50,
+    marginVertical: 10,
+    marginHorizontal: 60,
+
     justifyContent: 'center',
     alignItems: 'center',
   },
   buttonText: {
     color: '#FFF',
-    fontWeight: 'bold',
     fontSize: 16,
   },
   textLeft: {

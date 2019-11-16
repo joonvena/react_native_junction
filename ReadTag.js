@@ -28,15 +28,20 @@ export default class ReadTag extends Component {
     return (
       <KeyboardAvoidingView behavior="padding" style={styles.container}>
         <Image
-          style={{width: '100%', height: 400, marginTop: 50,}}
+          style={{width: '100%', height: 400, marginTop: 50}}
           source={require('./img/readTag.jpeg')}
         />
-        <View style={styles.container2}>
-          <Text style={[styles.bodyText, {padding: 30}]}>Put your phone close to the NFC tag on your suitcase</Text>
+        <View style={styles.container2} onPress={this.props.next}>
+          <Text style={[styles.bodyText, {padding: 30}]}>
+            Put your phone close to the NFC tag on your suitcase
+          </Text>
         </View>
         <View style={{position: 'absolute', left: 0, right: 0, bottom: 35}}>
           <Text style={styles.bodyText}>Having trouble reading NFC tag?</Text>
-          <Text style={[styles.bodyText, {color: '#0B1560'}]}>See FAQ here</Text>
+          <Text
+            style={[styles.bodyText, {color: '#0B1560', fontWeight: 'bold'}]}>
+            See FAQ here
+          </Text>
         </View>
       </KeyboardAvoidingView>
     );

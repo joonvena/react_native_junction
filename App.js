@@ -15,6 +15,11 @@ import BottomNavigation from './BottomNavigationBar';
 import {Container} from 'native-base';
 import BagInfo from './BagInfo';
 import ReadTag from './ReadTag';
+import LuggageOnTheWay from './LuggageOnTheWay';
+import LuggageOnBoard from './LuggageOnBoard';
+import LuggageAllSet from './LuggageAllSet';
+import Oops from './Oops';
+import Thankyou from './Thankyou';
 
 function strToBytes(str) {
   let result = [];
@@ -151,19 +156,26 @@ export default function App() {
     });
   });
 
+  const confirm = () => {
+    setIndex(9);
+  };
+
+  const next = () => {
+    setIndex(3);
+  };
+
   return (
     <Container>
       <SwipeableViews
         style={styles.slideContainer}
-        index={index}
-        disabled={index == 2 ? true : false}>
-
+        index={index}>
         <View style={{flex: 1, justifyContent: 'center'}}>
           <ReadTag
             isTestRunning={isTestRunning}
             setText={setTextValue}
             runTest={_runTest}
             text={text}
+            next={() => setIndex(1)}
           />
         </View>
         <View style={{flex: 1, justifyContent: 'center'}}>
@@ -176,6 +188,7 @@ export default function App() {
             setHeight={setHeightValue}
             setSpecialBaggage={setSpecialBaggageValue}
             runTest={_runTest}
+            next={() => setIndex(2)}
             text={text}
             fragile={fragile}
             height={height}
@@ -184,38 +197,26 @@ export default function App() {
             specialBaggage={specialBaggage}
           />
         </View>
-
         <View style={{flex: 1, justifyContent: 'center'}}>
-          <BagInfo
-            isTestRunning={isTestRunning}
-            setText={setTextValue}
-            setFragile={setFragileValue}
-            setWidth={setWidthValue}
-            setLength={setLengthValue}
-            setHeight={setHeightValue}
-            setSpecialBaggage={setSpecialBaggageValue}
-            runTest={_runTest}
-            text={text}
-            fragile={fragile}
-            height={height}
-            width={width}
-            length={length}
-            specialBaggage={specialBaggage}
-          />
+          <LuggageAllSet next={() => setIndex(3)}/>
+        </View>
+        <View style={{flex: 1, justifyContent: 'center'}}>
+          <LuggageOnBoard next={() => setIndex(4)}/>
+        </View>
+        <View style={{flex: 1, justifyContent: 'center'}}>
+          <LuggageOnTheWay next={() => setIndex(5)}/>
         </View>
 
-        {/* <View style={{flex: 1, justifyContent: 'center'}}>
-          <Customers showuserdata={showUserData} />
-        </View>
 
         <View style={{flex: 1, justifyContent: 'center'}}>
-          <UserData
-            customerdata={customer}
-            customerId={customerId}
-            customertarget={customerTarget}
-            goBackClientToList={() => setIndex(1)}
-          />
-        </View> */}
+          <Oops next={() => setIndex(6)}/>
+        </View>
+        <View style={{flex: 1, justifyContent: 'center'}}>
+          <BagInfo setText={setTextValue} text={text} confirm={() => setIndex(7)}/>
+        </View>
+        <View style={{flex: 1, justifyContent: 'center'}}>
+          <Thankyou />
+        </View>
       </SwipeableViews>
     </Container>
   );
@@ -237,6 +238,18 @@ const styles = {
     backgroundColor: '#fff',
   },
   slide4: {
+    backgroundColor: '#fff',
+  },
+  slide5: {
+    backgroundColor: '#fff',
+  },
+  slide6: {
+    backgroundColor: '#fff',
+  },
+  slide7: {
+    backgroundColor: '#fff',
+  },
+  slide8: {
     backgroundColor: '#fff',
   },
 };
