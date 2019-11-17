@@ -7,7 +7,7 @@ import {
   TextInput,
 } from 'react-native';
 import SwipeableViews from 'react-swipeable-views-native';
-import NfcManager, {NdefParser, NfcTech} from 'react-native-nfc-manager';
+import NfcManager, {NdefParser, NfcTech, Ndef} from 'react-native-nfc-manager';
 import Forms from './Forms';
 import Customers from './Customers';
 import UserData from './UserData';
@@ -20,6 +20,7 @@ import LuggageOnBoard from './LuggageOnBoard';
 import LuggageAllSet from './LuggageAllSet';
 import Oops from './Oops';
 import Thankyou from './Thankyou';
+import { tsPropertySignature } from '@babel/types';
 
 function strToBytes(str) {
   let result = [];
@@ -27,21 +28,6 @@ function strToBytes(str) {
     result.push(str.charCodeAt(i));
   }
   return result;
-}
-
-function buildTextPayload(valueToWrite) {
-  const textBytes = strToBytes(valueToWrite);
-  // in this example. we always use `en`
-  const headerBytes = [
-    0xd1,
-    0x01,
-    textBytes.length + 3,
-    0x54,
-    0x02,
-    0x65,
-    0x6e,
-  ];
-  return [...headerBytes, ...textBytes];
 }
 
 export default function App() {
@@ -60,15 +46,57 @@ export default function App() {
   const [customer, setCustomer] = React.useState([]);
   const [customerId, setCustomerId] = React.useState('');
   const [customerTarget, setCustomerTarget] = React.useState('');
+  const [baggages, setBaggages] = React.useState([]);
 
-  const _runTest = textToWrite => {
-    const cleanUp = () => {
-      console.log(textToWrite);
-      setIsTestRunning(false);
-      NfcManager.closeTechnology();
-      NfcManager.unregisterTagEvent();
-    };
 
+  NfcManager.registerTagEvent(tag => console.log(tag))
+  .then(() => NfcManager.requestTechnology(NfcTech.Ndef))
+  .then(() => NfcManager.getTag())
+  .then(tag => {
+    console.log(JSON.stringify(tag));
+  })
+  .then(() => NfcManager.getNdefMessage())
+  .then(tag => {
+    _onTagDiscovered(tag)
+  })
+
+  const _onTagDiscovered = tag => {
+    console.log('Tag Discovered', tag);
+
+    let parsed = null;
+    if (tag.ndefMessage && tag.ndefMessage.length > 0) {
+        // ndefMessage is actually an array of NdefRecords, 
+        // and we can iterate through each NdefRecord, decode its payload 
+        // according to its TNF & type
+        const ndefRecords = tag.ndefMessage;
+
+        function decodeNdefRecord(record) {
+            if (Ndef.isType(record, Ndef.TNF_WELL_KNOWN, Ndef.RTD_TEXT)) {
+                return Ndef.text.decodePayload(record.payload);
+            } else if (Ndef.isType(record, Ndef.TNF_WELL_KNOWN, Ndef.RTD_URI)) {
+                return ['uri', Ndef.uri.decodePayload(record.payload)];
+            }
+
+            return ['unknown', '---']
+        }
+
+        parsed = ndefRecords.map(decodeNdefRecord);
+        console.log(parsed);
+        _fetchClientInfo(parsed[0])
+    }
+}
+
+const _fetchClientInfo = (clientId) => {
+  fetch(`https://qbd2axzahk.execute-api.eu-north-1.amazonaws.com/api/customers/${clientId}`)
+     .then(res => res.json())
+     .then(data => {
+       setBaggages([data]);
+        setIndex(1);
+     })
+     .catch(error => console.log(error))
+}
+
+  const _runTest = () => {
     const parseText = tag => {
       if (tag.ndefMessage) {
         return NdefParser.parseText(tag.ndefMessage[0]);
@@ -76,7 +104,34 @@ export default function App() {
       return null;
     };
 
-    setIsTestRunning(false);
+
+    const _onTagDiscovered = tag => {
+      console.log('Tag Discovered', tag);
+  
+      let parsed = null;
+      if (tag.ndefMessage && tag.ndefMessage.length > 0) {
+          // ndefMessage is actually an array of NdefRecords, 
+          // and we can iterate through each NdefRecord, decode its payload 
+          // according to its TNF & type
+          const ndefRecords = tag.ndefMessage;
+  
+          function decodeNdefRecord(record) {
+              if (Ndef.isType(record, Ndef.TNF_WELL_KNOWN, Ndef.RTD_TEXT)) {
+                  return Ndef.text.decodePayload(record.payload);
+              } else if (Ndef.isType(record, Ndef.TNF_WELL_KNOWN, Ndef.RTD_URI)) {
+                  return ['uri', Ndef.uri.decodePayload(record.payload)];
+              }
+  
+              return ['unknown', '---']
+          }
+  
+          parsed = ndefRecords.map(decodeNdefRecord);
+          console.log(parsed);
+          _fetchClientInfo(parsed[0])
+      }
+  
+  }
+
     NfcManager.registerTagEvent(tag => console.log(tag))
       .then(() => NfcManager.requestTechnology(NfcTech.Ndef))
       .then(() => NfcManager.getTag())
@@ -85,16 +140,11 @@ export default function App() {
       })
       .then(() => NfcManager.getNdefMessage())
       .then(tag => {
+        _onTagDiscovered(tag)
         let parsedText = parseText(tag);
         setTag(tag);
         setParsedText(parsedText);
       })
-      .then(() => NfcManager.writeNdefMessage(buildTextPayload(textToWrite)))
-      .then(cleanUp)
-      .catch(err => {
-        console.warn(err);
-        cleanUp();
-      });
   };
 
   const _cancelTest = () => {
@@ -105,6 +155,7 @@ export default function App() {
     NfcManager.start()
       .then(() => NfcManager.isEnabled())
       .then(enabled => setEnabled(enabled))
+      .then(_runTest)
       .catch(err => {
         console.warn(err);
         setEnabled(false);
@@ -147,14 +198,16 @@ export default function App() {
     setIndex(2);
   };
 
-  React.useEffect(() => {
+/*  React.useEffect(() => {
     NfcManager.isSupported().then(supported => {
       setSupported(true);
+      console.log(index);
       if (supported) {
+        console.log("her?");
         _startNfc();
       }
     });
-  });
+  },[index])*/
 
   const confirm = () => {
     setIndex(9);
@@ -163,6 +216,10 @@ export default function App() {
   const next = () => {
     setIndex(3);
   };
+
+  const setView = (index) => {
+    setIndex(index);
+  }
 
   return (
     <Container>
@@ -180,28 +237,17 @@ export default function App() {
         </View>
         <View style={{flex: 1, justifyContent: 'center'}}>
           <Forms
-            isTestRunning={isTestRunning}
-            setText={setTextValue}
-            setFragile={setFragileValue}
-            setWidth={setWidthValue}
-            setLength={setLengthValue}
-            setHeight={setHeightValue}
-            setSpecialBaggage={setSpecialBaggageValue}
-            runTest={_runTest}
             next={() => setIndex(2)}
-            text={text}
-            fragile={fragile}
-            height={height}
-            width={width}
-            length={length}
-            specialBaggage={specialBaggage}
+            baggage={baggages}
+            setScreen={setView}
+
           />
         </View>
         <View style={{flex: 1, justifyContent: 'center'}}>
           <LuggageAllSet next={() => setIndex(3)}/>
         </View>
         <View style={{flex: 1, justifyContent: 'center'}}>
-          <LuggageOnBoard next={() => setIndex(4)}/>
+          <LuggageOnBoard next={() => setIndex(4)} setScreen={setView} />
         </View>
         <View style={{flex: 1, justifyContent: 'center'}}>
           <LuggageOnTheWay next={() => setIndex(5)}/>

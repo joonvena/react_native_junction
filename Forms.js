@@ -12,91 +12,96 @@ import {
 } from 'react-native';
 import {Switch} from 'native-base';
 
-export default class Forms extends Component {
-  constructor(props) {
-    super(props);
+export default function Forms(props){
+  const [baggageEvent, setbaggageEvents] = React.useState([]);
 
-    this.state = this.initialState;
-  }
 
-  resetForm = () => {
-    Keyboard.dismiss();
-    this.setState(this.initialState);
-  };
+    const checkBaggageStatus = (events) => {
+      console.log("hello");
+      var mostRecentDate = new Date(Math.max.apply(null, events.map(function(e) {
+        return new Date(e.timestamp);
+      })));
+      var mostRecentObject = events.filter( e => { 
+        var d = new Date( e.timestamp ); 
+        return d.getTime() == mostRecentDate.getTime();
+    })[0];
+    
+      if(mostRecentObject.type == "LOADED") {
+        props.setScreen(3);
+      }
+    }
 
-  render() {
     return (
-      <KeyboardAvoidingView behavior="padding" style={styles.container}>
-        <Image
-          style={{width: '100%', marginTop: 10}}
-          source={require('./img/details.png')}
-        />
-        <View style={[styles.container2]}>
-          <View style={[styles.rows, {alignItems: 'flex-start'}]}>
-            <Image
-              style={{width: 30, height: 30, marginEnd: 10}}
-              source={require('./img/icon_weight.png')}
-            />
-            <Text style={styles.textRight}>Weight</Text>
-            <Text style={styles.textLeft}> 21.4 kg</Text>
+    
+      props.baggage.map((bag) => {
+        return (
+          <KeyboardAvoidingView behavior="padding" style={styles.container}>
+          <Image
+            style={{width: '100%', marginTop: 10}}
+            source={require('./img/details.png')}
+          />
+          <View style={[styles.container2]}>
+            <View style={[styles.rows, {alignItems: 'flex-start'}]}>
+              <Image
+                style={{width: 30, height: 30, marginEnd: 10}}
+                source={require('./img/icon_weight.png')}
+              />
+              <Text style={styles.textRight}>Weight</Text>
+              <Text style={styles.textLeft}>{bag.weight} kg</Text>
+            </View>
+            <View style={[styles.rows, {alignItems: 'flex-start'}]}>
+              <Image
+                style={{width: 30, height: 30, marginEnd: 10}}
+                source={require('./img/icon_size.png')}
+              />
+              <Text style={styles.textRight}>Size</Text>
+              <Text style={styles.textLeft}>{bag.size}</Text>
+            </View>
+            <View style={[styles.rows, {alignItems: 'flex-start'}]}>
+              <Image
+                style={{width: 30, height: 30, marginEnd: 10}}
+                source={require('./img/icon_fragile.png')}
+              />
+              <Text style={styles.textRight}>Fragile</Text>
+              <Switch
+                style={{alignSelf: 'flex-end'}}
+                value={bag.fragile}
+                trackColor={{false: 'grey', true: '#0B1560'}}
+              />
+            </View>
+            <View style={[styles.rows, {alignItems: 'flex-start'}]}>
+              <Image
+                style={{width: 30, height: 30, marginEnd: 10}}
+                source={require('./img/icon_special.png')}
+              />
+              <Text style={styles.textRight}>Special</Text>
+              <Switch
+                style={{alignSelf: 'flex-end'}}
+                value={bag.special}
+                trackColor={{false: 'grey', true: '#0B1560'}}
+              />
+            </View>
+            <View style={[styles.rows, {alignItems: 'flex-start'}]}>
+              <Image
+                style={{width: 30, height: 30, marginEnd: 10}}
+                source={require('./img/icon_co2.png')}
+              />
+              <Text style={styles.textRight}>CO2 Emission</Text>
+              <Text style={styles.textLeft}>{bag.co}</Text>
+            </View>
+            <TouchableOpacity
+              style={styles.button}>
+              <Text style={styles.buttonText} onPress={() => checkBaggageStatus(bag.events)}>Check status</Text>
+            </TouchableOpacity>
           </View>
-          <View style={[styles.rows, {alignItems: 'flex-start'}]}>
-            <Image
-              style={{width: 30, height: 30, marginEnd: 10}}
-              source={require('./img/icon_size.png')}
-            />
-            <Text style={styles.textRight}>Size</Text>
-            <Text style={styles.textLeft}> 42 cm x 32 cm x 64 cm</Text>
-          </View>
-          <View style={[styles.rows, {alignItems: 'flex-start'}]}>
-            <Image
-              style={{width: 30, height: 30, marginEnd: 10}}
-              source={require('./img/icon_fragile.png')}
-            />
-            <Text style={styles.textRight}>Fragile</Text>
-            <Switch
-              style={{alignSelf: 'flex-end'}}
-              onValueChange={fragile => this.props.setFragile(fragile)}
-              value={this.props.fragile}
-              trackColor={{false: 'grey', true: '#0B1560'}}
-            />
-          </View>
-          <View style={[styles.rows, {alignItems: 'flex-start'}]}>
-            <Image
-              style={{width: 30, height: 30, marginEnd: 10}}
-              source={require('./img/icon_special.png')}
-            />
-            <Text style={styles.textRight}>Special</Text>
-            <Switch
-              style={{alignSelf: 'flex-end'}}
-              onValueChange={specialBaggage =>
-                this.props.setSpecialBaggage(specialBaggage)
-              }
-              value={this.props.specialBaggage}
-              trackColor={{false: 'grey', true: '#0B1560'}}
-            />
-          </View>
-          <View style={[styles.rows, {alignItems: 'flex-start'}]}>
-            <Image
-              style={{width: 30, height: 30, marginEnd: 10}}
-              source={require('./img/icon_co2.png')}
-            />
-            <Text style={styles.textRight}>CO2 Emission</Text>
-            <Text style={styles.textLeft}> 13</Text>
-          </View>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={this.props.next}>
-            <Text style={styles.buttonText}>Next</Text>
-          </TouchableOpacity>
-          {this.props.isTestRunning ? <Text>Yes</Text> : null}
-        </View>
-      </KeyboardAvoidingView>
+        </KeyboardAvoidingView>
+        )
+      
+      })
     );
   }
-}
 
-const styles = StyleSheet.create({
+  const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',

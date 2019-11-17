@@ -38,7 +38,7 @@ export default class ReadTag extends Component {
         </View>
         <View style={{position: 'absolute', left: 0, right: 0, bottom: 35}}>
           <Text style={styles.bodyText}>Having trouble reading NFC tag?</Text>
-          <Text
+          <Text onPush={this.props.runTest}
             style={[styles.bodyText, {color: '#0B1560', fontWeight: 'bold'}]}>
             See FAQ here
           </Text>
