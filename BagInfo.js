@@ -27,7 +27,7 @@ export default class BagInfo extends Component {
 
   render() {
     return (
-      <KeyboardAvoidingView behavior="padding" style={styles.container}>
+      <View behavior="padding" style={styles.container}>
         <ImageBackground style={{width: '100%', height: '100%'}} source={image}>
           <View style={styles.container2}>
             <TextInput
@@ -45,7 +45,7 @@ export default class BagInfo extends Component {
             </TouchableOpacity>
           </View>
         </ImageBackground>
-      </KeyboardAvoidingView>
+      </View>
     );
   }
 }
@@ -66,14 +66,13 @@ const styles = StyleSheet.create({
     color: '#0B1560',
   },
   textInput: {
-    height: 35,
+    height: 50,
     borderRadius: 15,
     backgroundColor: '#FFF',
     paddingHorizontal: 15,
-    paddingVertical: 30,
     marginBottom: 30,
     marginHorizontal: 20,
-    fontSize: 20,
+    fontSize: 18,
     color: '#0B1560',
     alignContent: 'center',
     marginTop: 350,

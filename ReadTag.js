@@ -28,7 +28,11 @@ export default class ReadTag extends Component {
     return (
       <KeyboardAvoidingView behavior="padding" style={styles.container}>
         <Image
-          style={{width: '100%', height: 400, marginTop: 50}}
+          style={{width: '100%'}}
+          source={require('./img/nav.png')}
+        />
+        <Image
+          style={{width: '100%', height: 400}}
           source={require('./img/readTag.jpeg')}
         />
         <View style={styles.container2} onPress={this.props.next}>

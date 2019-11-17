@@ -7,7 +7,7 @@ export default function LuggageOnBoard(props) {
     return (
       <KeyboardAvoidingView behavior="padding" style={styles.container}>
         <Image
-          style={{width: '100%', marginTop: 10}}
+          style={{width: '100%'}}
           source={require('./img/Luggages_onboard.png')}
           onPress={() => props.setScreen(2)}
         />
@@ -20,6 +20,5 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    marginTop: 30,
   },
 });

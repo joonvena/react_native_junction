@@ -36,8 +36,12 @@ export default function Forms(props){
       props.baggage.map((bag) => {
         return (
           <KeyboardAvoidingView behavior="padding" style={styles.container}>
+                  <Image
+          style={{width: '100%'}}
+          source={require('./img/nav.png')}
+        />
           <Image
-            style={{width: '100%', marginTop: 10}}
+            style={{width: '100%'}}
             source={require('./img/details.png')}
           />
           <View style={[styles.container2]}>
@@ -106,7 +110,6 @@ export default function Forms(props){
     flex: 1,
     backgroundColor: '#fff',
     //justifyContent: 'flex-start',
-    marginTop: 30,
   },
   container2: {
     paddingHorizontal: 10,

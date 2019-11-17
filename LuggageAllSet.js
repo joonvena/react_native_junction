@@ -17,7 +17,7 @@ export default class LuggageAllSet extends Component {
     return (
       <KeyboardAvoidingView behavior="padding" style={styles.container}>
         <Image
-          style={{width: '100%', marginTop: 10}}
+          style={{width: '100%'}}
           source={require('./img/Luggages_All_Set.png')}
           onPress={this.props.next}
         />
@@ -30,6 +30,5 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    marginTop: 30,
   },
 });

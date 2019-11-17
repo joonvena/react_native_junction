@@ -17,7 +17,7 @@ export default class Oops extends Component {
     return (
       <KeyboardAvoidingView behavior="padding" style={styles.container}>
         <Image
-          style={{width: '100%'}}
+          style={{width: '100%', height: '100%'}}
           source={require('./img/Oops.png')}
           onPress={this.props.next}
         />
@@ -30,6 +30,5 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    marginTop: 50,
   },
 });
